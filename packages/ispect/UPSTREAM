@@ -1,0 +1,25 @@
+# ISpect integration patch
+
+Upstream: [ispect 7.2.0](https://pub.dev/packages/ispect/versions/7.2.0), MIT.
+Archive SHA-256: `811faa1ce8a1613a2376c528efee9e177aa89593e3c0e187c2516154a7b23935`.
+`lib/`, `LICENSE` and `pubspec.yaml` are the published source, not a new viewer.
+
+Local version: `7.2.0+alshamel.1`. Upstream monorepo-only dependency overrides
+are omitted; dependencies resolve through the host workspace lockfile.
+The complete functional delta is:
+
+1. Export the existing `LogsScreen` for embedding through the package barrel.
+2. Restore desktop log keyboard focus after search only while its own focus
+   scope is active; never reclaim focus from a sibling application pane.
+3. Handle the log-search global shortcut only while that same scope is active.
+
+The host owns pane sizing, visibility and its nested Navigator. This patch does
+not change capture, serialization, business requests, exports or logger state.
+Regression evidence: `test/alshamel/services/windows_diagnostic_test.dart` in the
+host package exercises the real viewer, focus transfer, hidden-pane exclusion,
+resizing, RTL and preservation of the host route/draft.
+
+When an upstream release exposes embedding and respects sibling focus scopes,
+replace this path dependency with that release after the focused tests pass.
+Removing Windows diagnostics removes this folder and its dependencies; no app
+feature or domain model depends on it.
