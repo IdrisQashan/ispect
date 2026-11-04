@@ -115,6 +115,9 @@ class _MainLogsViewState extends State<MainLogsView> {
     final hk = HardwareKeyboard.instance;
     if (!hk.isMetaPressed && !hk.isControlPressed) return false;
     if (!mounted || !(ModalRoute.isCurrentOf(context) ?? true)) return false;
+    if (widget.searchFocusNode.enclosingScope?.hasFocus != true) {
+      return false;
+    }
     _focusSearchField();
     return true;
   }
